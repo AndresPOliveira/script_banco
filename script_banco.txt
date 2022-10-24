@@ -1,0 +1,205 @@
+CREATE DATABASE fleming;
+DROP DATABASE fleming;
+USE fleming;
+ 
+-- Criando tabela CLIENTE
+CREATE TABLE cliente(
+idCliente INT PRIMARY KEY AUTO_INCREMENT,
+cnpj CHAR(14),
+nome VARCHAR(45),
+telefoneEmpresarial VARCHAR(20),
+telefoneCelular VARCHAR(20),
+email VARCHAR(45),
+senha VARCHAR(45)
+);
+
+-- Criando tabela USUARIO
+CREATE TABLE usuario(
+idUsuario INT PRIMARY KEY AUTO_INCREMENT,
+fkCliente INT,
+FOREIGN KEY (fkCliente) REFERENCES cliente(idCliente),
+email VARCHAR(45),
+senha VARCHAR(45),
+cargo VARCHAR(45),
+nome VARCHAR(45),
+cpf VARCHAR(45),
+telefoneEmpresarial VARCHAR(20),
+telefoneCelular VARCHAR(20)
+);
+ 
+-- Criando tabela LABORATORIO
+CREATE TABLE laboratorio(
+idLaboratorio INT PRIMARY KEY AUTO_INCREMENT,
+fkCliente INT,
+FOREIGN KEY (fkCliente) REFERENCES cliente(idCliente),
+unidade VARCHAR(45),
+cep CHAR(10),
+uf CHAR(2),
+cidade VARCHAR(45),
+bairro VARCHAR(45),
+numero INT,
+complemento VARCHAR(45),
+referencia VARCHAR(45)
+);
+
+-- Criando tabela SALA
+CREATE TABLE sala(
+idSala INT,
+fkLaboratorio INT,
+fkClienTe INT,
+FOREIGN KEY (fkLaboratorio) REFERENCES laboratorio(idLaboratorio),
+FOREIGN KEY (fkCliente) REFERENCES cliente(idCliente),
+PRIMARY KEY (idSala,fkLaboratorio,fkCliente),
+nomeSala VARCHAR(45)
+);
+
+-- Criando tabela SENSOR
+CREATE TABLE sensor(
+idSensor INT,
+fkSala INT,
+fkLaboratorio INT,
+fkClienTe INT,
+FOREIGN KEY (fkSala) REFERENCES sala(idSala),
+FOREIGN KEY (fkLaboratorio) REFERENCES laboratorio(idLaboratorio),
+FOREIGN KEY (fkCliente) REFERENCES cliente(idCliente),
+PRIMARY KEY (idSensor,fkSala,fkLaboratorio,fkCliente),
+tipoSensor VARCHAR(45),
+posicionamento VARCHAR(45)
+);
+
+-- Criando tabela CAPTURA
+CREATE TABLE captura(
+idCaptura INT,
+fkSensor INT,
+fkSala INT,
+fkLaboratorio INT,
+fkClienTe INT,
+FOREIGN KEY (fkSensor) REFERENCES sensor(idSensor),
+FOREIGN KEY (fkSala) REFERENCES sala(idSala),
+FOREIGN KEY (fkLaboratorio) REFERENCES laboratorio(idLaboratorio),
+FOREIGN KEY (fkCliente) REFERENCES cliente(idCliente),
+PRIMARY KEY (idCaptura,fkSensor,fkSala,fkLaboratorio,fkCliente),
+umidade DOUBLE,
+dtTime DATETIME
+);
+
+-- Criando tabela CONTATO
+CREATE TABLE CONTATO(
+idContato INT PRIMARY KEY AUTO_INCREMENT,
+emailContato VARCHAR(45),
+nomeContato VARCHAR(45),
+mensagem VARCHAR(45)
+);
+
+-- Inserindo dados na tabela CLIENTE
+INSERT INTO cliente (cnpj,nome,telefoneEmpresarial,TelefoneCelular,email,senha)VALUES
+('12345678901234','UsuarioTeste','1120201010','11920201010','user123@fleming.com','123');
+
+
+-- Inserindo dados na tabela USUARIO
+INSERT INTO usuario(fkCliente,email,senha,cargo,cpf,telefoneEmpresarial,telefoneCelular)VALUES
+(1,'user111@fleming.com','123','Testes','000000000-00','1120201010','11920202020');
+
+-- Inserindo dados na tabela LABORATORIO
+INSERT INTO laboratorio (fkCliente,unidade,cep,uf,cidade,bairro,numero,complemento,referencia)VALUES
+(1,'Unidadde A','00000-000','SP','São Paulo','Consolação',1001,null,null),
+(1,'Unidadde B','00000-111','SP','São Paulo','Consolação',2000,null,null);
+
+-- Inserindo dados na tabela SALA
+INSERT INTO sala (idSala,fkLaboratorio,fkCliente,nomeSala)VALUES
+(1,1,1,'Sala 1'),
+(2,1,1,'Sala 2'),
+(3,1,1,'Sala 3'),
+(1,2,1,'Sala 1'),
+(2,2,1,'Sala 2'),
+(3,2,1,'Sala 3');
+
+-- Inserindo dados na tabela SENSOR
+INSERT INTO sensor(idSensor,fkSala,fkLaboratorio,fkCliente,tipoSensor,posicionamento)VALUES
+(1,1,1,1,'umidade','Area A'),
+(2,1,1,1,'umidade','Area B'),
+(3,1,1,1,'umidade','Area C'),
+(4,1,1,1,'umidade','Area D'),
+(5,1,1,1,'umidade','Area E'),
+(1,2,1,1,'umidade','Area A'),
+(2,2,1,1,'umidade','Area B'),
+(3,2,1,1,'umidade','Area C'),
+(4,2,1,1,'umidade','Area D'),
+(5,2,1,1,'umidade','Area E'),
+(1,1,2,1,'umidade','Area A'),
+(2,1,2,1,'umidade','Area B'),
+(3,1,2,1,'umidade','Area C'),
+(4,1,2,1,'umidade','Area D'),
+(5,1,2,1,'umidade','Area E'),
+(1,2,2,1,'umidade','Area A'),
+(2,2,2,1,'umidade','Area B'),
+(3,2,2,1,'umidade','Area C'),
+(4,2,2,1,'umidade','Area D'),
+(5,2,2,1,'umidade','Area E')
+;
+
+-- Inserindo dados na tabela CAPTURA
+INSERT INTO captura (idCaptura,fkSensor,fkSala,fkLaboratorio,fkCliente,umidade,dtTime)VALUES
+(1,1,1,1,1,50.60,NOW()),
+(2,2,1,1,1,50.70,NOW()),
+(3,3,1,1,1,50.65,NOW()),
+(4,4,1,1,1,50.75,NOW()),
+(5,5,1,1,1,50.60,NOW()),
+(6,1,2,1,1,50.60,NOW())
+;
+INSERT INTO captura (idCaptura,fkSensor,fkSala,fkLaboratorio,fkCliente,umidade,dtTime)VALUES
+(7,1,1,1,1,65.64,NOW()),
+(8,2,1,1,1,63.70,NOW()),
+(9,3,1,1,1,64.75,NOW()),
+(10,4,1,1,1,63.90,NOW()),
+(11,5,1,1,1,64.32,NOW()),
+(12,1,2,1,1,42.56,NOW())
+;
+INSERT INTO captura (idCaptura,fkSensor,fkSala,fkLaboratorio,fkCliente,umidade,dtTime)VALUES
+(15,1,1,2,1,41.25,NOW()),
+(16,2,1,2,1,41.30,NOW())
+;
+
+-- Inserindo dados na tabela CONTATO
+INSERT INTO contato (emailContato, nomeContato,Mensagem)VALUES
+('emailteste@teste.com','usuario teste','Mensagem teste de contato.');
+
+-- Selecionando dados das tabelas individualmente
+SELECT*FROM cliente;
+SELECT*FROM usuario;
+SELECT*FROM laboratorio;
+SELECT*FROM sala;
+SELECT*FROM sensor;
+SELECT*FROM captura;
+SELECT*FROM contato;
+
+-- Opções de SELECT para login
+SELECT email,senha FROM cliente;
+SELECT email,senha FROM usuario;
+
+-- Mostrar a quantidade de alerta que um laboratório teve
+SELECT COUNT(umidade)'Quantidade de alertas',unidade FROM captura 
+JOIN laboratorio ON fkLaboratorio = idlaboratorio
+WHERE umidade >= 62 OR umidade <= 42
+GROUP BY unidade;
+
+
+-- Mostrar a quantidade de salas em alerta 
+SELECT COUNT(umidade)'Quantidade de alertas',nomeSala FROM captura
+JOIN sala ON fkSala = idsala
+WHERE umidade >= 62 OR umidade <= 42
+GROUP BY nomeSala;
+
+
+-- Mostrar quantidade de salas normalizadas
+SELECT COUNT(umidade)'Quantidade de alertas',nomeSala FROM captura
+JOIN sala ON fkSala = idsala
+WHERE umidade < 62 OR umidade > 42
+GROUP BY nomeSala;
+
+-- Mostrar a quantidade de salas em alerta por laboratorio
+SELECT COUNT(umidade)'Quantidade de alertas',nomeSala,unidade FROM captura
+JOIN sala ON fkSala = idsala
+JOIN laboratorio ON captura.fkLaboratorio = idlaboratorio
+WHERE umidade >= 62 OR umidade <= 42
+GROUP BY nomeSala;
