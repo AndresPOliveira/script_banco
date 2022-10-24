@@ -15,9 +15,10 @@ senha VARCHAR(45)
 
 -- Criando tabela USUARIO
 CREATE TABLE usuario(
-idUsuario INT PRIMARY KEY AUTO_INCREMENT,
+idUsuario INT,
 fkCliente INT,
 FOREIGN KEY (fkCliente) REFERENCES cliente(idCliente),
+PRIMARY KEY (idUsuario,fkCliente),
 email VARCHAR(45),
 senha VARCHAR(45),
 cargo VARCHAR(45),
@@ -97,8 +98,8 @@ INSERT INTO cliente (cnpj,nome,telefoneEmpresarial,TelefoneCelular,email,senha)V
 
 
 -- Inserindo dados na tabela USUARIO
-INSERT INTO usuario(fkCliente,email,senha,cargo,cpf,telefoneEmpresarial,telefoneCelular)VALUES
-(1,'user111@fleming.com','123','Testes','000000000-00','1120201010','11920202020');
+INSERT INTO usuario(idusuario,fkCliente,email,senha,cargo,cpf,telefoneEmpresarial,telefoneCelular)VALUES
+(1,1,'user111@fleming.com','123','Testes','000000000-00','1120201010','11920202020');
 
 -- Inserindo dados na tabela LABORATORIO
 INSERT INTO laboratorio (fkCliente,unidade,cep,uf,cidade,bairro,numero,complemento,referencia)VALUES
@@ -156,8 +157,8 @@ INSERT INTO captura (idCaptura,fkSensor,fkSala,fkLaboratorio,fkCliente,umidade,d
 (12,1,2,1,1,42.56,NOW())
 ;
 INSERT INTO captura (idCaptura,fkSensor,fkSala,fkLaboratorio,fkCliente,umidade,dtTime)VALUES
-(15,1,1,2,1,41.25,NOW()),
-(16,2,1,2,1,41.30,NOW())
+(13,1,1,2,1,41.25,NOW()),
+(14,2,1,2,1,41.30,NOW())
 ;
 
 -- Inserindo dados na tabela CONTATO
@@ -190,11 +191,10 @@ JOIN sala ON fkSala = idsala
 WHERE umidade >= 62 OR umidade <= 42
 GROUP BY nomeSala;
 
-
 -- Mostrar quantidade de salas normalizadas
 SELECT COUNT(umidade)'Quantidade de alertas',nomeSala FROM captura
 JOIN sala ON fkSala = idsala
-WHERE umidade < 62 OR umidade > 42
+WHERE umidade < 62 and umidade > 42
 GROUP BY nomeSala;
 
 -- Mostrar a quantidade de salas em alerta por laboratorio
